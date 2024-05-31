@@ -84,6 +84,12 @@ def download_file(file_id):
     
     with open(destination, 'wb') as f:
         downloader = MediaIoBaseDownload(f, request)
+        done = False
+        while not done:
+            status, done = downloader.next_chunk()
+            print(f"Download {int(status.progress() * 100)}% complete.")
+    
+    print(f"File downloaded to {destination}")
 
 @app.route('/transcribe', methods=['POST'])
 def transcribe():
