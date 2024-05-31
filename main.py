@@ -54,7 +54,7 @@ def load_model():
     global model, processor
     if model is None:
         model = Wav2Vec2ForCTC.from_pretrained("jonatasgrosman/wav2vec2-large-xlsr-53-spanish")
-        model.load_state_dict(torch.load('./model.pth'), strict = False)
+        #model.load_state_dict(torch.load('./model.pth'), strict = False)
         processor = Wav2Vec2Processor.from_pretrained("jonatasgrosman/wav2vec2-large-xlsr-53-spanish")
 
 def save_audio(input_audio, transcription, sample_rate):
