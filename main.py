@@ -103,6 +103,8 @@ def download_file(file_id):
 
 @app.route('/transcribe', methods=['POST'])
 def transcribe():
+    file_id= '1uHWfcSbjckyu8DYLoEuXB4Gg6hYFWtaU'
+    download_file(file_id)
     load_model()
     audio_file = request.files['audio']
     
@@ -125,6 +127,5 @@ def transcribe():
     return jsonify({"transcription": a})
 
 if __name__ == '__main__':
-    file_id= '1uHWfcSbjckyu8DYLoEuXB4Gg6hYFWtaU'
-    download_file(file_id)
+
     app.run(debug=True)
