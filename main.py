@@ -10,6 +10,7 @@ from datetime import datetime
 import io
 import os
 
+import threading
 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
@@ -56,7 +57,12 @@ def load_model():
         model = Wav2Vec2ForCTC.from_pretrained("jonatasgrosman/wav2vec2-large-xlsr-53-spanish")
         model.load_state_dict(torch.load('./model.pth'), strict = False)
         processor = Wav2Vec2Processor.from_pretrained("jonatasgrosman/wav2vec2-large-xlsr-53-spanish")
-
+def save_audio_async(input_audio, transcription, sample_rate):
+    def save_audio_sync():
+        save_audio(input_audio, transcription, sample_rate)
+    
+    thread = threading.Thread(target=save_audio_sync)
+    thread.start()
 def save_audio(input_audio, transcription, sample_rate):
    
     _, filename_suffix = recibirjson(transcription)
@@ -111,9 +117,10 @@ def transcribe():
     transcription = predicted_sentences[0]
     print(transcription)
     
-    #save_audio(input_audio, transcription, sample_rate)
+    save_audio_async(input_audio, transcription, sample_rate)
 
     a , b = recibirjson(transcription)
+    print(b)
 
     return jsonify({"transcription": a})
 
