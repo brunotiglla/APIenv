@@ -54,7 +54,7 @@ def load_model():
     global model, processor
     if model is None:
         model = Wav2Vec2ForCTC.from_pretrained("jonatasgrosman/wav2vec2-large-xlsr-53-spanish")
-        #model.load_state_dict(torch.load('./model.pth'), strict = False)
+        model.load_state_dict(torch.load('./model.pth'), strict = False)
         processor = Wav2Vec2Processor.from_pretrained("jonatasgrosman/wav2vec2-large-xlsr-53-spanish")
 
 def save_audio(input_audio, transcription, sample_rate):
@@ -74,12 +74,16 @@ def save_audio(input_audio, transcription, sample_rate):
 def download_file(file_id):
     drive_service = get_drive_service()
     
+    # Verificar si el archivo ya existe
     file_info = drive_service.files().get(fileId=file_id, fields='name').execute()
     file_name = file_info.get('name')
-
     current_directory = os.path.dirname(os.path.abspath(__file__))
     destination = os.path.join(current_directory, file_name)
-
+    
+    if os.path.exists(destination):
+        print(f"El archivo {file_name} ya existe en el directorio actual.")
+        return
+    
     request = drive_service.files().get_media(fileId=file_id)
     
     with open(destination, 'wb') as f:
@@ -87,9 +91,9 @@ def download_file(file_id):
         done = False
         while not done:
             status, done = downloader.next_chunk()
-            print(f"Download {int(status.progress() * 100)}% complete.")
+            print(f"Descarga del archivo {int(status.progress() * 100)}% completa.")
     
-    print(f"File downloaded to {destination}")
+    print(f"Archivo descargado a {destination}")
 
 @app.route('/transcribe', methods=['POST'])
 def transcribe():
@@ -107,7 +111,7 @@ def transcribe():
     transcription = predicted_sentences[0]
     print(transcription)
     
-    save_audio(input_audio, transcription, sample_rate)
+    #save_audio(input_audio, transcription, sample_rate)
 
     a , b = recibirjson(transcription)
 
