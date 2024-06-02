@@ -425,7 +425,7 @@ def recibirjson(texto):
 
     if comando is not None:
         nuevo_texto.append(comando)
-    if cantidad != 0:
+    if cantidad != 0 and cpoint != -1:
         nuevo_texto.append(num2words(cantidad, lang='es')) 
     if palabraproducto is not None:
         nuevo_texto.append(palabraproducto) 
